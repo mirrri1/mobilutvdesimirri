@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>D&M party app</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimal-ui, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-default">
+
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+<link rel="apple-touch-startup-image" 
+		media="(device-width: 320px)
+		and (device-height: 608px)
+		and (-webkit-device-pixel-ratio: 2)"
+		href="halloj.jpg">
+		
+<link rel="apple-touch-icon"
+		sizes="114x114"
+		href="halloj.jpg">
+  
+   <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+      var map;
+            
+      function ZoomIn(zoomInDiv, map, scale) {
+
+        // Set CSS for the control border.
+        var controlUI = document.createElement('div');
+			controlUI.style.backgroundColor = 'rgba(245,222,179,.8)';
+			controlUI.style.border = 'rgb(135,206,250)';
+        controlUI.style.borderRadius = '3px';
+        controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+        controlUI.style.cursor = 'pointer';
+        controlUI.style.marginBottom = '22px';
+        controlUI.style.textAlign = 'center';
+        controlUI.title = 'Click to zoom';
+        
+
+        // Set CSS for the control interior.
+        var controlText = document.createElement('div');
+        controlText.style.color = 'rgb(25,25,25)';
+        controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+        controlText.style.fontSize = '22px';
+        controlText.style.lineHeight = '38px';
+        controlText.style.paddingLeft = '5px';
+        controlText.style.paddingRight = '5px';
+        controlText.innerHTML = '+';
+        controlUI.appendChild(controlText);
+        zoomInDiv.appendChild(controlUI);
+
+        // Setup the click event listeners: simply set the map to Chicago.
+        controlUI.addEventListener('click', function() {
+		map.setZoom(map.zoom + scale);
+        });
+
+      }
+      
+      
+	function ZoomOut(zoomOutDiv, map, scale) {
+
+			// Set CSS for the control border.
+			var controlUI = document.createElement('div');
+			controlUI.style.backgroundColor = 'rgba(245,222,179,.8)';
+			controlUI.style.border = 'rgb(135,206,250)';
+			controlUI.style.borderRadius = '3px';
+			controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+			controlUI.style.cursor = 'pointer';
+			controlUI.style.marginBottom = '22px';
+			controlUI.style.textAlign = 'center';
+			controlUI.title = 'Click to zoom';
+		
+
+			// Set CSS for the control interior.
+			var controlText = document.createElement('div');
+			controlText.style.color = 'rgb(25,25,25)';
+			controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+			controlText.style.fontSize = '34px';
+			controlText.style.lineHeight = '38px';
+			controlText.style.paddingLeft = '5px';
+			controlText.style.paddingRight = '5px';
+			controlText.innerHTML = '-';
+			controlUI.appendChild(controlText);
+			zoomOutDiv.appendChild(controlUI);
+
+			// Setup the click event listeners: simply set the map to Chicago.
+			controlUI.addEventListener('click', function() {
+			map.setZoom(map.zoom - scale);
+			});
+
+		  }
+
+      function PanUp(panUpDiv, map) {
+
+			// Set CSS for the control border.
+			var controlUI = document.createElement('div');
+			controlUI.style.backgroundColor = 'rgba(245,222,179,.8)';
+			controlUI.style.border = 'rgb(135,206,250)';
+			controlUI.style.borderRadius = '3px';
+			controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+			controlUI.style.cursor = 'pointer';
+			controlUI.style.marginBottom = '22px';
+			controlUI.style.textAlign = 'center';
+			controlUI.style.fontSize = '36px';
+			controlUI.className="glyphicon glyphicon-menu-up";
+			controlUI.title = 'Click to zoom';
+		
+
+			// Set CSS for the control interior.
+			var controlText = document.createElement('div');
+			controlText.style.color = 'rgb(25,25,25)';
+			controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+			controlText.style.lineHeight = '20px';
+			controlText.style.paddingLeft = '20px';
+			controlText.style.paddingRight = '20px';
+			controlUI.style.size="40px";
+
+			controlUI.appendChild(controlText);
+			panUpDiv.appendChild(controlUI);
+
+			// Setup the click event listeners: simply set the map to Chicago.
+			controlUI.addEventListener('click', function() {
+			map.panBy(0,-300);
+			});
+
+		  }
+      
+      function PanDown(panDownDiv, map) {
+
+			// Set CSS for the control border.
+			var controlUI = document.createElement('div');
+			controlUI.style.backgroundColor = 'rgba(245,222,179,.8)';
+			controlUI.style.border = 'rgb(135,206,250)';
+			controlUI.style.borderRadius = '3px';
+			controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+			controlUI.style.cursor = 'pointer';
+			controlUI.style.marginBottom = '22px';
+			controlUI.style.textAlign = 'center';
+			controlUI.title = 'Click to zoom';
+			controlUI.style.fontSize = '36px';
+
+		
+
+			// Set CSS for the control interior.
+			var controlText = document.createElement('div');
+			controlText.style.color = 'rgb(25,25,25)';
+			controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+			controlText.style.lineHeight = '20px';
+			controlText.style.paddingLeft = '20px';
+			controlText.style.paddingRight = '20px';
+			controlUI.className="glyphicon glyphicon-menu-down";
+			controlUI.appendChild(controlText);
+			panDownDiv.appendChild(controlUI);
+
+			// Setup the click event listeners: simply set the map to Chicago.
+			controlUI.addEventListener('click', function() {
+			map.panBy(0,300);
+			});
+
+		  }
+		  
+      function PanLeft(panLeftDiv, map) {
+
+			// Set CSS for the control border.
+			var controlUI = document.createElement('div');
+			controlUI.style.backgroundColor = 'rgba(245,222,179,.8)';
+			controlUI.style.border = 'rgb(135,206,250)';
+			controlUI.style.borderRadius = '3px';
+			controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+			controlUI.style.cursor = 'pointer';
+			controlUI.style.marginBottom = '22px';
+			controlUI.style.textAlign = 'center';
+			controlUI.title = 'Click to zoom';
+			controlUI.style.fontSize = '36px';
+
+		
+
+			// Set CSS for the control interior.
+			var controlText = document.createElement('div');
+			controlText.style.color = 'rgb(25,25,25)';
+			controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+			controlText.style.fontSize = '16px';
+			controlText.style.lineHeight = '20px';
+			controlText.style.paddingLeft = '20px';
+			controlText.style.paddingRight = '20px';
+			controlUI.className="glyphicon glyphicon-menu-left";
+			controlUI.appendChild(controlText);
+			panLeftDiv.appendChild(controlUI);
+
+			// Setup the click event listeners: simply set the map to Chicago.
+			controlUI.addEventListener('click', function() {
+			map.panBy(-300,0);
+			});
+
+		  }
+		  
+      function PanRight(panRightDiv, map) {
+
+			// Set CSS for the control border.
+			var controlUI = document.createElement('div');
+			controlUI.style.backgroundColor = 'rgba(245,222,179,.8)';
+			controlUI.style.border = 'rgb(135,206,250)';
+			controlUI.style.borderRadius = '3px';
+			controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+			controlUI.style.cursor = 'pointer';
+			controlUI.style.marginBottom = '22px';
+			controlUI.style.textAlign = 'center';
+			controlUI.title = 'Click to zoom';
+			controlUI.style.fontSize = '36px';
+
+		
+
+			// Set CSS for the control interior.
+			var controlText = document.createElement('div');
+			controlText.style.color = 'rgb(25,25,25)';
+			controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+			controlText.style.fontSize = '16px';
+			controlText.style.lineHeight = '20px';
+			controlText.style.paddingLeft = '20px';
+			controlText.style.paddingRight = '20px';
+			controlUI.className="glyphicon glyphicon-menu-right";
+			controlUI.appendChild(controlText);
+			panRightDiv.appendChild(controlUI);
+
+			// Setup the click event listeners: simply set the map to Chicago.
+			controlUI.addEventListener('click', function() {
+			map.panBy(300,0);
+			});
+
+		  }
+
+ 
+      
+
+
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: 59.329324, lng: 18.068581},
+          zoom: 15,
+          tilt: 45,
+          disableDefaultUI: true
+        });
+
+        
+        var zoomInDiv = document.createElement('div');
+        var zoomIn = new ZoomIn(zoomInDiv, map, 2);
+
+//        zoomInDiv.index = 1;
+        map.controls[google.maps.ControlPosition.TOP_RIGHT].push(zoomInDiv);
+        
+        
+        //zoomOut
+        var zoomOutDiv = document.createElement('div');
+        var zoomOut = new ZoomOut(zoomOutDiv, map, 2);
+
+   //     zoomOutDiv.index = 1;
+        map.controls[google.maps.ControlPosition.TOP_RIGHT].push(zoomOutDiv);
+        
+        //panUp
+        var panUpDiv = document.createElement('div');
+        var panUp = new PanUp(panUpDiv, map);
+        
+        
+        map.controls[google.maps.ControlPosition.TOP_CENTER].push(panUpDiv);
+
+        //panDown
+        var panDownDiv = document.createElement('div');
+        var panDown = new PanDown(panDownDiv, map);
+        
+        
+        map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(panDownDiv);
+        
+      	//panToDiLeft
+        var panLeftDiv = document.createElement('div');
+        var panLeft = new PanLeft(panLeftDiv, map);
+        
+        
+        map.controls[google.maps.ControlPosition.LEFT_CENTER].push(panLeftDiv);
+        
+        //panToDiRight
+        var panRightDiv = document.createElement('div');
+        var panRight = new PanRight(panRightDiv, map);
+        
+        
+        map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(panRightDiv);
+
+
+      }
+      
+      
+
+      
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?&callback=initMap"
+    async defer>
+    </script>
+    
+  </body>
+</head>
+</html>
