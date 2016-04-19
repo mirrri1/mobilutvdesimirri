@@ -1,10 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Karta KTH</title>
-<meta name="viewport" content="initial-scale=1.0">
+<title>D&M party app</title>
 <meta charset="utf-8">
-    <style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimal-ui, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-default">
+
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+<link rel="apple-touch-startup-image" 
+		media="(device-width: 320px)
+		and (device-height: 608px)
+		and (-webkit-device-pixel-ratio: 2)"
+		href="halloj.jpg">
+		
+<link rel="apple-touch-icon"
+		sizes="114x114"
+		href="halloj.jpg">
+  
+   <style>
       html, body {
         height: 100%;
         margin: 0;
@@ -13,19 +28,38 @@
       #map {
         height: 100%;
       }
+
+      #move {
+        height: 100%;
+        position: absolute;
+        top: 10px;
+        left: 25%;
+      }
+  
+      
     </style>
   </head>
   <body>
     <div id="map"></div>
+    <div id="move">
+    	<input id="Desi" type="button" value="Desi's fave"></input>
+    	<input id="Mirri" type="button" value="Mirri's fave" onclick="moveToM();"></input>
+    </div>
+    	
+    
     <script>
-      var map;
+    var map;
+	var move;
+      
+      
+      
             
       function ZoomIn(zoomInDiv, map, scale) {
 
         // Set CSS for the control border.
         var controlUI = document.createElement('div');
-        controlUI.style.backgroundColor = '#fff';
-        controlUI.style.border = '2px solid #fff';
+			controlUI.style.backgroundColor = 'rgba(245,222,179,.8)';
+			controlUI.style.border = 'rgb(135,206,250)';
         controlUI.style.borderRadius = '3px';
         controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
         controlUI.style.cursor = 'pointer';
@@ -58,8 +92,8 @@
 
 			// Set CSS for the control border.
 			var controlUI = document.createElement('div');
-			controlUI.style.backgroundColor = '#fff';
-			controlUI.style.border = '2px solid #fff';
+			controlUI.style.backgroundColor = 'rgba(245,222,179,.8)';
+			controlUI.style.border = 'rgb(135,206,250)';
 			controlUI.style.borderRadius = '3px';
 			controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
 			controlUI.style.cursor = 'pointer';
@@ -91,13 +125,15 @@
 
 			// Set CSS for the control border.
 			var controlUI = document.createElement('div');
-			controlUI.style.backgroundColor = '#fff';
-			controlUI.style.border = '2px solid #fff';
+			controlUI.style.backgroundColor = 'rgba(245,222,179,.8)';
+			controlUI.style.border = 'rgb(135,206,250)';
 			controlUI.style.borderRadius = '3px';
 			controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
 			controlUI.style.cursor = 'pointer';
 			controlUI.style.marginBottom = '22px';
 			controlUI.style.textAlign = 'center';
+			controlUI.style.fontSize = '36px';
+			controlUI.className="glyphicon glyphicon-menu-up";
 			controlUI.title = 'Click to zoom';
 		
 
@@ -105,11 +141,11 @@
 			var controlText = document.createElement('div');
 			controlText.style.color = 'rgb(25,25,25)';
 			controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
-			controlText.style.fontSize = '16px';
 			controlText.style.lineHeight = '20px';
 			controlText.style.paddingLeft = '20px';
 			controlText.style.paddingRight = '20px';
-			controlText.innerHTML = 'Up';
+			controlUI.style.size="40px";
+
 			controlUI.appendChild(controlText);
 			panUpDiv.appendChild(controlUI);
 
@@ -124,25 +160,26 @@
 
 			// Set CSS for the control border.
 			var controlUI = document.createElement('div');
-			controlUI.style.backgroundColor = '#fff';
-			controlUI.style.border = '2px solid #fff';
+			controlUI.style.backgroundColor = 'rgba(245,222,179,.8)';
+			controlUI.style.border = 'rgb(135,206,250)';
 			controlUI.style.borderRadius = '3px';
 			controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
 			controlUI.style.cursor = 'pointer';
 			controlUI.style.marginBottom = '22px';
 			controlUI.style.textAlign = 'center';
 			controlUI.title = 'Click to zoom';
+			controlUI.style.fontSize = '36px';
+
 		
 
 			// Set CSS for the control interior.
 			var controlText = document.createElement('div');
 			controlText.style.color = 'rgb(25,25,25)';
 			controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
-			controlText.style.fontSize = '16px';
 			controlText.style.lineHeight = '20px';
 			controlText.style.paddingLeft = '20px';
 			controlText.style.paddingRight = '20px';
-			controlText.innerHTML = 'Down';
+			controlUI.className="glyphicon glyphicon-menu-down";
 			controlUI.appendChild(controlText);
 			panDownDiv.appendChild(controlUI);
 
@@ -157,14 +194,16 @@
 
 			// Set CSS for the control border.
 			var controlUI = document.createElement('div');
-			controlUI.style.backgroundColor = '#fff';
-			controlUI.style.border = '2px solid #fff';
+			controlUI.style.backgroundColor = 'rgba(245,222,179,.8)';
+			controlUI.style.border = 'rgb(135,206,250)';
 			controlUI.style.borderRadius = '3px';
 			controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
 			controlUI.style.cursor = 'pointer';
 			controlUI.style.marginBottom = '22px';
 			controlUI.style.textAlign = 'center';
 			controlUI.title = 'Click to zoom';
+			controlUI.style.fontSize = '36px';
+
 		
 
 			// Set CSS for the control interior.
@@ -175,7 +214,7 @@
 			controlText.style.lineHeight = '20px';
 			controlText.style.paddingLeft = '20px';
 			controlText.style.paddingRight = '20px';
-			controlText.innerHTML = 'Left';
+			controlUI.className="glyphicon glyphicon-menu-left";
 			controlUI.appendChild(controlText);
 			panLeftDiv.appendChild(controlUI);
 
@@ -190,14 +229,16 @@
 
 			// Set CSS for the control border.
 			var controlUI = document.createElement('div');
-			controlUI.style.backgroundColor = '#fff';
-			controlUI.style.border = '2px solid #fff';
+			controlUI.style.backgroundColor = 'rgba(245,222,179,.8)';
+			controlUI.style.border = 'rgb(135,206,250)';
 			controlUI.style.borderRadius = '3px';
 			controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
 			controlUI.style.cursor = 'pointer';
 			controlUI.style.marginBottom = '22px';
 			controlUI.style.textAlign = 'center';
 			controlUI.title = 'Click to zoom';
+			controlUI.style.fontSize = '36px';
+
 		
 
 			// Set CSS for the control interior.
@@ -208,7 +249,7 @@
 			controlText.style.lineHeight = '20px';
 			controlText.style.paddingLeft = '20px';
 			controlText.style.paddingRight = '20px';
-			controlText.innerHTML = 'Right';
+			controlUI.className="glyphicon glyphicon-menu-right";
 			controlUI.appendChild(controlText);
 			panRightDiv.appendChild(controlUI);
 
@@ -219,33 +260,72 @@
 
 		  }
 
- 
-      
-
 
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: 59.329324, lng: 18.068581},
-          mapTypeId: google.maps.MapTypeId.SATELLITE,
-          zoom: 15,
+          zoom: 13,
           tilt: 45,
           disableDefaultUI: true
         });
+        var desi = {lat: 59.339821, lng: 18.016824};
+        var mirri = {lat: 59.372525, lng: 18.068926};
         
-        var myspot = {lat: 59.329324, lng: 18.068581};
-        var marker = new google.maps.Marker({
-        position: myspot, 
-        animation: google.maps.Animation.BOUNCE,
-        map: map
-        });
+        var desiPlace = '<div id="cont">'+
+      '<div id="siteNot">'+
+      '</div>'+
+      '<h1 id="firstHead" class="firstHead">Desis Hangout Spot</h1>'+
+      '<div id="bodyCont">'+
+      '<p><b>Hornsberg</b> är Desirées favoritplats. Här finns fina kolonilotter och det är alltid fin solnedgång.'+
+      'Här promenerar Desirée för att få landetkänsla och kolla på det fina slottet!</p>'+
+      '<p>Läs om kolonilotterna <a href="http://www.karlbergsbro.se/pdf/historik2009.pdf">här</a></p>'+
+      '</div>'+
+      '</div>';
+      
+		var infowindowDesi = new google.maps.InfoWindow({
+    		content: desiPlace
+    	});
+
+		var markerD = new google.maps.Marker({
+    		position: desi,
+   	 		map: map,
+			title: 'Desirées favoritplats'
+  		});
+  		markerD.addListener('click', function() {
+    		infowindowDesi.open(map, markerD);
+  		});    	
+  		
+      
+
+        var mirriPlace = '<div id="content">'+
+      '<div id="siteNotice">'+
+      '</div>'+
+      '<h1 id="firstHeading" class="firstHeading">Mirris Hangout Spot</h1>'+
+      '<div id="bodyContent">'+
+      '<p><b>Lappis Beach</b> är Mirris favoritplats. Man kan ta en promenad, grilla eller bara umgås.'+
+      'Hit går Miriam för att lyssna på vågornas ljud och slappna av. <b>MYS!</b></p>'+
+      '<p>Läs om lappis beach <a http://wikimapia.org/1787123/sv/Ekhagenbadet">här</a></p>'+
+      '</div>'+
+      '</div>';
+      
+        var infowindowMirri = new google.maps.InfoWindow({
+    		content: mirriPlace
+    	});
+
+		var markerM = new google.maps.Marker({
+    		position: mirri,
+   	 		map: map,
+			title: 'Miriams favoritplats'
+  		});
+  		markerM.addListener('click', function() {
+    		infowindowMirri.open(map, markerM);
+  		});
+
+
+
         
-        var secondspot = {lat: 59.332854, lng: 18.069365};
-        var marker = new google.maps.Marker({
-        position: secondspot, 
-        draggable: true,
-        animation: google.maps.Animation.DROP,
-        map: map
-        });
+
+        
 
         
         var zoomInDiv = document.createElement('div');
@@ -287,19 +367,28 @@
         var panRightDiv = document.createElement('div');
         var panRight = new PanRight(panRightDiv, map);
         
+ 		map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(panRightDiv);
         
-        map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(panRightDiv);
+        //Go to specific locations
+
+       
 
 
       }
       
+  		function moveToD(){
+      		map.setCenter(markerD.getPosition())
+      	};
       
 
       
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?&callback=initMap"
-    async defer></script>
+    async defer>
+    </script>
     
   </body>
 </head>
 </html>
+
+
