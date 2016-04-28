@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta content="utf-8" http-equiv="encoding">
+</head>
+<script data-require="angular.js@1.3.11" data-semver="1.3.11" src="https://code.angularjs.org/1.3.11/angular.js"></script>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+<script src="angular-cookies.min.js"></script>
+<script src="angularLocalStorage.js"></script>
+<script src="angular-youtube-embed.js"></script>
+
+<body ng-app="myApp" ng-controller="videoCtrl">
+<h2>My karate List</h2>
+<form ng-submit="videoAdd()">
+    <input type="text" ng-model="videoURLInput" size="50" placeholder="Add video URL">
+    <input type="text" ng-model="imageInput" size="50" placeholder="Add video image">
+    <input type="text" ng-model="titleInput" size="50" placeholder="Add video title">
+    <input type="text" ng-model="categoryInput" size="50" placeholder="Add category">
+    <input type="submit" value="Add New">
+</form>
+</br>
+
+<!-- You can use 'youtube-video' as an element or attribute. -->
+<div ng-repeat="video in theBestVideos">
+    <img style="max-width: 70px; max-height:70px"ng-src = "{{ video.image }}">
+    <h3 class="title"> {{ video.title}} </h3>
+    <youtube-video video-id="video.info"></youtube-video>
+    <p class="category">{{ video.category }}</p>
+    <p class="rating">Stars: {{ video.rating }}</p>
+    <button ng-click="remove($index)">Remove video</button>
+    <p class="comments">{{ video.comment }}</p>
+    <form ng-submit="commentAdd($index)">
+	<input type="text" ng-model="commentInput" size="80" placeholder="Comment on video">
+	<input type="submit" value="Comment">
+	</form>
+    <input type="submit" ng-click="rateVideo($index)" value="Add star">
+</div>
+
+<script>
+var app = angular.module('myApp', ['youtube-embed', 'ngCookies', 'angularLocalStorage']); 
+app.controller('videoCtrl', function($scope, youtubeEmbedUtils, storage) 
+    {
+    $scope.defaultVideos = [
+    {   
+        title: 'Very cute puppies',
+        image: 'https://i.ytimg.com/vi/amtuB-2wGeQ/hqdefault.jpg',
+        rating: 0,
+        category: 'puppy',
+        info: 'amtuB-2wGeQ',
+        comment: ''
+    },
+    {
+        title: 'More cute puppies',
+        image: 'https://i.ytimg.com/vi/kZK76x2OxRw/maxresdefault.jpg',
+        rating: 0,
+        category: 'puppy',
+        info: 'kZK76x2OxRw',
+        comment: 'Soooo cute <3'
+    },
+    {
+        title: 'You can never get enough of cute puppies',
+        image: 'https://i.ytimg.com/vd?id=rT_I_GV_oEM&amp;ats=1000&amp;w=960&amp;h=720&amp;sigh=xf46_T7O2-3D-LwdPyXFHmuieXY',
+        rating: 0,
+        category: 'puppy',
+        info: 'rT_I_GV_oEM',
+        comment: 'OOOMMMGG!!'
+    }
+    ];
+    
+    storage.bind($scope, 'theBestVideos', {defaultValue: $scope.defaultVideos});
+    console.log("Test1");
+    $scope.videoAdd = function() 
+        {
+        $scope.videoID = youtubeEmbedUtils.getIdFromURL($scope.videoURLInput);
+        $scope.theBestVideos.push({title: $scope.titleInput, image: $scope.imageInput, rating: 0, category: $scope.categoryInput, info:$scope.videoID});
+        $scope.videoURLInput = "";
+        $scope.titleInput = "";
+        $scope.categoryInput = "";
+        $scope.imageInput = "";
+        };
+
+
+
+    $scope.rateVideo = function(index) {
+    	if ($scope.theBestVideos[index].rating <=4 )
+        	$scope.theBestVideos[index].rating += 1;
+    };
+    
+    $scope.commentAdd = function(index) {
+    console.log("comment")
+        $scope.theBestVideos[index].comment = $scope.commentInput;
+        console.log($scope.commentInput)
+
+
+    };
+
+//  $scope.theBestVideos = [
+//     {   
+//         title: 'Very cute puppies',
+//         image: 'https://i.ytimg.com/vi/amtuB-2wGeQ/hqdefault.jpg',
+//         rating: 0,
+//         category: 'puppy',
+//         info: 'amtuB-2wGeQ'
+//     },
+//     {
+//         title: 'More cute puppies',
+//         image: 'https://i.ytimg.com/vi/kZK76x2OxRw/maxresdefault.jpg',
+//         rating: 0,
+//         category: 'puppy',
+//         info: 'kZK76x2OxRw'
+//     },
+//     {
+//         title: 'You can never get enough of cute puppies',
+//         image: 'https://i.ytimg.com/vd?id=rT_I_GV_oEM&amp;ats=1000&amp;w=960&amp;h=720&amp;sigh=xf46_T7O2-3D-LwdPyXFHmuieXY',
+//         rating: 0,
+//         category: 'puppy',
+//         info: 'rT_I_GV_oEM'
+//     }
+//     ];
+//     
+    
+     $scope.remove = function(index) 
+        {
+        $scope.theBestVideos.splice(index, 1)
+        };
+
+});
+</script>
+</body>
+</html>
