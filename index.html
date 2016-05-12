@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<!-- saved from url=(0047)http://evothings.com/demos/dome_pics/index.html -->
+<html class="ui-mobile"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><!--<base href="http://evothings.com/demos/dome_pics/index.html">--><base href=".">
+
+    
+    <meta name="viewport" content="width=device-width, user-scalable=no,
+        shrink-to-fit=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+
+    <title>Getting some data from a json API</title>
+    <link rel="stylesheet" href="jquery.mobile-1.4.5.css">
+    <script src="jquery-2.1.1.min.js"></script><style type="text/css"></style>
+    <script src="jquery.mobile-1.4.5.js"></script>
+
+    <!-- This script, cordova.js,  is built into Evothings Viewer (i.e. you won't need to add this file to your project) The idea is to pick up a http resource, even if you're using https, which would normally create a cross-protocol violation. The HTTP plug-in from Apache Cordova allows this to be carried out, see especially this post: https://evothings.com/evothings-secured-now-serving-over-https/ -->
+
+    <script src="cordova.js"></script>
+
+    <script>
+    // Redirect console.log to Evothings Workbench, so you can see data under 'Tools'
+    if (window.hyper && window.hyper.log) { hyper.log = console.log }
+    </script>
+</head>
+
+ 
+
+<body class="ui-mobile-viewport ui-overlay-a" data-pinterest-extension-installed="cr1.39.1"><div data-role="page" data-url="/demos/dome_pics/index.html" tabindex="0" class="ui-page ui-page-theme-a ui-page-active" style="min-height: 623px;">
+<script>
+
+// Create an empty sensor object as a global 
+var sensor = {};
+
+// Where the sensor data is stored
+var mSensorDataURL = 'http://backup.evothings.com:8082/output/';
+
+// A subscriber's key (Five other keys also availble at http://smartspaces.r1.kth.se:8082)
+sensor.key = "BQa4EqqbgxfMgpBQ8XwNhvP82Dj";
+// var mSensors = {
+//         1: { 
+//             "key":"BQa4EqqbgxfMgpBQ8XwNhvP82Dj",
+//             "image":"https://evothings.com/demos/dome_pics/IMG_1758.JPG”},
+//         2: { 
+//             "key":"J3Wgj9qegGFX4r9KlxxGfaeMXQB",
+//             "image":"https://evothings.com/demos/dome_pics/IMG_1759.JPG"},
+//         3: { 
+//             "key":"lB6p49pzXdFGQjpLwzzOTWj10rd",
+//             "image":"https://evothings.com/demos/dome_pics/IMG_1762.JPG”},
+//         4: {
+//             "key":"L4D98lO9ObtOdzx3PggKIaWmMGA",
+//             "image":"https://evothings.com/demos/dome_pics/IMG_1763.JPG”},
+//         5: {
+//             "key":"LAjQ9E8PBOiOdzx3PggKIaWmMGA",
+//             "image":"https://evothings.com/demos/dome_pics/IMG_1761.JPG"},
+//         6: { 
+//             "key":"BkPNOapq2WSMgpVlNQQKFYXPBWr",
+//             "image":"https://evothings.com/demos/dome_pics/IMG_1760.JPG”}
+//     };
+
+// A bitmap image describing where the sensor is located
+sensor.image = "https://evothings.com/demos/dome_pics/IMG_1758.JPG";
+
+
+function roomKey(id) {
+    console.log(id);
+    if (id=="room1"){
+        sensor.key = "BQa4EqqbgxfMgpBQ8XwNhvP82Dj";
+        sensor.image = "https://evothings.com/demos/dome_pics/IMG_1758.JPG";
+        getJSON();
+    }
+    else if (id=="room2"){
+        sensor.key = "J3Wgj9qegGFX4r9KlxxGfaeMXQB";
+        sensor.image = "https://evothings.com/demos/dome_pics/IMG_1759.JPG";
+        getJSON();   
+    }
+    else if (id=="room3"){
+        sensor.key = "lB6p49pzXdFGQjpLwzzOTWj10rd";
+        sensor.image = "https://evothings.com/demos/dome_pics/IMG_1762.JPG";
+        getJSON();
+    }
+    else if (id=="room4"){
+        sensor.key = "L4D98lO9ObtOdzx3PggKIaWmMGA";
+        sensor.image = "https://evothings.com/demos/dome_pics/IMG_1763.JPG";
+        getJSON();
+    }
+    else if (id=="room5"){
+        sensor.key = "LAjQ9E8PBOiOdzx3PggKIaWmMGA";
+        sensor.image = "https://evothings.com/demos/dome_pics/IMG_1761.JPG";
+        getJSON();
+    }
+    else {
+        sensor.key = "BkPNOapq2WSMgpVlNQQKFYXPBWr";
+        sensor.image = "https://evothings.com/demos/dome_pics/IMG_1760.JPG";
+        getJSON();
+    }
+
+}
+
+// Function to retrieve data, placing it in a "response" object
+function getJSON() 
+    {
+    if (window.cordova) 
+        {
+            console.log('Using Apache Cordova HTTP GET function');
+            cordovaHTTP.get(
+                mSensorDataURL + sensor.key + '.json?gt[timestamp]=now-1day&page=1',
+                function (response) 
+                    {
+                        if (response) 
+                            {
+                                sensor.data = JSON.parse(response.data)[0];
+                                sensor.fullData = JSON.parse(response.data);
+                                printData();
+                            }
+                    },
+                function (error) 
+                    {
+                    console.log(JSON.stringify(error));
+                    });
+        }    
+    else 
+        {
+            console.log(sensor.key);
+            console.log('Not using Cordova, fallback to AJAX via jquery');
+            $.ajax({
+                    url: mSensorDataURL + sensor.key + ".json?gt[timestamp]=now- 1day",
+                    jsonp: "callback",
+                    cache: true,
+                    dataType: "jsonp",
+                    data: 
+                        {
+                            page: 1
+                        },
+                    success: function(response) 
+                        {
+                            if (response && response[0]) 
+                                {
+                                    sensor.data = response[0];
+                                    sensor.fullData = response;
+                                    printData();
+                                }
+                        }
+                });
+        }
+}
+
+
+function printData()    
+    {
+        if (sensor && sensor.data) 
+            {
+            // Display the info.
+                html = '<h1>Sensor Data</h1>'
+                 + '<br /><div id="time">Time  ' + sensor.data.timestamp + '</div>'
+                 + '<div id="hum">Humidity ' + sensor.data.h + ' % (rel)</div>'
+                 + '<div id="temp">Temperature ' + sensor.data.t + ' celcius</div>'
+                 + '<img src="' + sensor.image + '" />'
+            } 
+    else 
+            {
+                html = '<h1>Sensor Data</h1>'
+                 + '<br />Sorry, sensor data not available right now :(</br>'
+                 + '<img src="' + sensor.image + '" />'
+            }
+    document.getElementById("printHere").innerHTML= html;
+    }
+
+
+</script><button onclick="history.back()" class=" ui-btn ui-shadow ui-corner-all">Exit</button><br>
+
+<button onclick="getJSON();" class=" ui-btn ui-shadow ui-corner-all">Retrieve some sensor data</button>
+<button onclick="roomKey(this.id);" id="room1" class=" ui-btn ui-shadow ui-corner-all">Room 1</button>
+<button onclick="roomKey(this.id);" id="room2" class=" ui-btn ui-shadow ui-corner-all">Room 2</button>
+<button onclick="roomKey(this.id);" id="room3" class=" ui-btn ui-shadow ui-corner-all">Room 3</button>
+<button onclick="roomKey(this.id);" id="room4" class=" ui-btn ui-shadow ui-corner-all">Room 4</button>
+<button onclick="roomKey(this.id);" id="room5" class=" ui-btn ui-shadow ui-corner-all">Room 5</button>
+<div id="printHere"></div>
+
+
+
+</div><div class="ui-loader ui-corner-all ui-body-a ui-loader-default"><span class="ui-icon-loading"></span><h1>loading</h1></div></body></html>
